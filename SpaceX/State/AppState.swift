@@ -8,14 +8,23 @@
 import Foundation
 import ComposableArchitecture
 
+enum FetchStatus {
+    case none, fetching, complete
+}
+
 struct AppState: Equatable {
     var company: Company?
+    var companyFetchStatus: FetchStatus = .none
+    
     var launches: IdentifiedArrayOf<Launch> = []
+    var launchesFetchStatus: FetchStatus = .none
+    
     var rockets: [String: Rocket] = [:]
+    var rocketsFetchStatus: FetchStatus = .none
     
     var sortedFilteredLaunches: IdentifiedArrayOf<LaunchViewState> {
         let sortedArray = self.launches
-            .sorted(by: \Launch.launchDate)
+            .sorted(by: \Launch.launchDate, using: >)
             .map { launch -> LaunchViewState in
                 LaunchViewState(
                     launch: launch,
@@ -62,8 +71,13 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         state, action, environment in
         switch action {
         case .fetchCompany:
+            guard case .none = state.companyFetchStatus else {
+                return .none
+            }
+            
             struct FetchCompanyId: Hashable {}
             
+            state.companyFetchStatus = .fetching
             return environment.spaceXClient
                 .fetchCompanyInfo()
                 .receive(on: environment.mainQueue)
@@ -72,15 +86,22 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 .cancellable(id: FetchCompanyId())
                 
         case .companyResponse(.failure):
+            state.companyFetchStatus = .complete
             return .none
             
         case let .companyResponse(.success(response)):
+            state.companyFetchStatus = .complete
             state.company = response
             return .none
             
         case .fetchLaunches:
+            guard case .none = state.launchesFetchStatus else {
+                return .none
+            }
+            
             struct FetchLaunchesId: Hashable {}
             
+            state.launchesFetchStatus = .fetching
             return environment.spaceXClient
                 .fetchLaunches()
                 .receive(on: environment.mainQueue)
@@ -89,15 +110,22 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 .cancellable(id: FetchLaunchesId())
             
         case .launchesResponse(.failure):
+            state.launchesFetchStatus = .complete
             return .none
             
         case let .launchesResponse(.success(response)):
+            state.launchesFetchStatus = .complete
             state.launches = response
             return .none
             
         case .fetchRockets:
+            guard case .none = state.rocketsFetchStatus else {
+                return .none
+            }
+            
             struct FetchRocketsId: Hashable {}
             
+            state.rocketsFetchStatus = .fetching
             return environment.spaceXClient
                 .fetchRockets()
                 .receive(on: environment.mainQueue)
@@ -106,9 +134,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 .cancellable(id: FetchRocketsId())
             
         case .rocketsResponse(.failure):
+            state.rocketsFetchStatus = .complete
             return .none
             
         case let .rocketsResponse(.success(response)):
+            state.rocketsFetchStatus = .complete
             state.rockets = response
             return .none
             
