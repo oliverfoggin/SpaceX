@@ -26,9 +26,10 @@ struct ContentView: View {
                             CompanyView(company: viewStore.company!)
                         }
                         Section(header: Text("LAUNCHES")) {
-                            ForEach(viewStore.launches) { launch in
-                                Text(launch.missionName)
+                            ForEach(viewStore.sortedFilteredLaunches) { launch in
+                                Text(launch.launch.missionName)
                             }
+//                            ForEachStore(<#T##store: Store<Array<_>, (Array<_>.Index, _)>##Store<Array<_>, (Array<_>.Index, _)>#>, content: <#T##(Store<_, _>) -> View#>)
                             if viewStore.launches.isEmpty {
                                 ProgressView()
                                     .progressViewStyle(LinearProgressViewStyle())

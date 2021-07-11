@@ -9,25 +9,20 @@ import SwiftUI
 import ComposableArchitecture
 
 struct Launch: Identifiable, Equatable {
-    enum ImageRequest: Equatable {
-        static func == (lhs: Launch.ImageRequest, rhs: Launch.ImageRequest) -> Bool {
-            return true
-        }
-        
-        case none
-        case downloading
-        case response(Result<UIImage, Error>)
-    }
-    
     var id: String
     var missionName: String
-    var launchDate: Date?
+    var launchDate: Date
     var rocketId: String?
     var patchImageURL: URL?
     var success: Bool?
     var wikipediaURL: URL?
-    var youtubeID: String?
-    var patchImage: ImageRequest = .none
+    var youtubeId: String?
+}
+
+struct LaunchState: Identifiable, Equatable {
+    var id: String
+    var launch: Launch
+    var rocket: Rocket?
 }
 
 extension Launch: Decodable {
@@ -57,36 +52,33 @@ extension Launch: Decodable {
         
         self.id = try rootContainer.decode(String.self, forKey: .id)
         self.missionName = try rootContainer.decode(String.self, forKey: .missionName)
-        self.launchDate = try? rootContainer.decode(Date.self, forKey: .launchDate)
+        self.launchDate = try rootContainer.decode(Date.self, forKey: .launchDate)
         self.rocketId = try? rootContainer.decode(String.self, forKey: .rocketId)
         self.patchImageURL = try? patchContainer.decode(URL.self, forKey: .small)
         self.success = try? rootContainer.decode(Bool.self, forKey: .success)
         self.wikipediaURL = try? linksContainer.decode(URL.self, forKey: .wikipedia)
-        self.youtubeID = try? linksContainer.decode(String.self, forKey: .youtubeId)
+        self.youtubeId = try? linksContainer.decode(String.self, forKey: .youtubeId)
     }
 }
 
 enum LaunchAction {
     case launchTapped
-    case fetchImage
-    case imageResponse(Result<UIImage, Error>)
 }
 
 struct LaunchEnvironment {}
 
-let launchReducer = Reducer<Launch, LaunchAction, LaunchEnvironment> {
+let launchStateReducer = Reducer<LaunchState, LaunchAction, LaunchEnvironment> {
     state, action, _ in
     switch action {
     case .launchTapped:
         return .none
-    case .fetchImage:
-        guard case .none = state.patchImage else {
-            return .none
-        }
-        state.patchImage = .downloading
-        return .none
-    case let .imageResponse(response):
-        state.patchImage = .response(response)
-        return .none
     }
 }
+
+//let launchReducer = Reducer<Launch, LaunchAction, LaunchEnvironment> {
+//    state, action, _ in
+//    switch action {
+//    case .launchTapped:
+//        return .none
+//    }
+//}
