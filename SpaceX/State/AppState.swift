@@ -13,10 +13,11 @@ struct AppState: Equatable {
     var launches: IdentifiedArrayOf<Launch> = []
     var rockets: [String: Rocket] = [:]
     
-    var sortedFilteredLaunches: IdentifiedArrayOf<LaunchState> {
+    var sortedFilteredLaunches: IdentifiedArrayOf<LaunchViewState> {
         let sortedArray = self.launches
-            .map { launch -> LaunchState in
-                var launchViewState = LaunchState(launch: launch, rocket: nil)
+            .sorted(by: \Launch.launchDate)
+            .map { launch -> LaunchViewState in
+                var launchViewState = LaunchViewState(launch: launch, rocket: nil)
 
                 if let rocketId = launch.rocketId {
                     launchViewState.rocket = self.rockets[rocketId]
