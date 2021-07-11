@@ -16,7 +16,7 @@ struct AppState: Equatable {
     var sortedFilteredLaunches: IdentifiedArrayOf<LaunchState> {
         let sortedArray = self.launches
             .map { launch -> LaunchState in
-                var launchViewState = LaunchState(id: launch.id, launch: launch, rocket: nil)
+                var launchViewState = LaunchState(launch: launch, rocket: nil)
 
                 if let rocketId = launch.rocketId {
                     launchViewState.rocket = self.rockets[rocketId]
@@ -34,7 +34,7 @@ enum AppAction {
     case companyResponse(Result<Company, SpaceXClient.Failure>)
     case fetchLaunches
     case launchesResponse(Result<[Launch], SpaceXClient.Failure>)
-    case launchAction(id: LaunchState.ID, action: LaunchAction)
+    case launchAction(id: Launch.ID, action: LaunchAction)
 }
 
 struct AppEnvironment {
@@ -50,11 +50,11 @@ extension AppEnvironment {
 }
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
-//    launchStateReducer.forEach(
-//        state: \AppState.sortedFilteredLaunches,
-//        action: /AppAction.launchAction(id:action:),
-//        environment: { _ in LaunchEnvironment() }
-//    ),
+    launchReducer.forEach(
+        state: \AppState.launches,
+        action: /AppAction.launchAction(id:action:),
+        environment: { _ in LaunchEnvironment() }
+    ),
     Reducer {
         state, action, environment in
         switch action {

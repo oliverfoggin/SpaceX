@@ -20,7 +20,7 @@ struct Launch: Identifiable, Equatable {
 }
 
 struct LaunchState: Identifiable, Equatable {
-    var id: String
+    var id: String { self.launch.id }
     var launch: Launch
     var rocket: Rocket?
 }
@@ -67,18 +67,10 @@ enum LaunchAction {
 
 struct LaunchEnvironment {}
 
-let launchStateReducer = Reducer<LaunchState, LaunchAction, LaunchEnvironment> {
+let launchReducer = Reducer<Launch, LaunchAction, LaunchEnvironment> {
     state, action, _ in
     switch action {
     case .launchTapped:
         return .none
     }
 }
-
-//let launchReducer = Reducer<Launch, LaunchAction, LaunchEnvironment> {
-//    state, action, _ in
-//    switch action {
-//    case .launchTapped:
-//        return .none
-//    }
-//}

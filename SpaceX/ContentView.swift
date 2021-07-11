@@ -8,6 +8,21 @@
 import SwiftUI
 import ComposableArchitecture
 
+struct HeaderView: View {
+    let title: String
+    
+    var body: some View {
+        VStack {
+            Text(title)
+                .foregroundColor(.white)
+                .font(.title)
+                .padding(4)
+        }
+        .frame(width: UIScreen.main.bounds.width, alignment: .leading)
+        .background(Color.init(white: 0.2))
+    }
+}
+
 struct ContentView: View {
     let store: Store<AppState, AppAction>
     
@@ -21,25 +36,31 @@ struct ContentView: View {
                             viewStore.send(AppAction.fetchCompany)
                         }
                 } else {
-                    List {
-                        Section(header: Text("COMPANY")) {
-                            CompanyView(company: viewStore.company!)
-                        }
-                        Section(header: Text("LAUNCHES")) {
-                            ForEach(viewStore.sortedFilteredLaunches) { launch in
-                                Text(launch.launch.missionName)
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 10, pinnedViews: [.sectionHeaders]) {
+                            Section(header: HeaderView(title: "COMPANY")) {
+                                CompanyView(company: viewStore.company!)
                             }
-//                            ForEachStore(<#T##store: Store<Array<_>, (Array<_>.Index, _)>##Store<Array<_>, (Array<_>.Index, _)>#>, content: <#T##(Store<_, _>) -> View#>)
-                            if viewStore.launches.isEmpty {
-                                ProgressView()
-                                    .progressViewStyle(LinearProgressViewStyle())
-                                    .onAppear {
-                                        viewStore.send(AppAction.fetchLaunches)
+                            Section(header: HeaderView(title: "LAUNCHES")) {
+                                if viewStore.launches.isEmpty {
+                                    ProgressView()
+                                        .progressViewStyle(LinearProgressViewStyle())
+                                        .onAppear {
+                                            viewStore.send(AppAction.fetchLaunches)
+                                        }
+                                } else {
+                                    ForEachStore(
+                                        self.store.scope(state: \.sortedFilteredLaunches, action: AppAction.launchAction(id:action:))
+                                    ) { launchStore in
+                                        VStack {
+                                            LaunchView.init(store: launchStore)
+                                            Divider()
+                                        }
                                     }
+                                }
                             }
                         }
                     }
-                    .listStyle(PlainListStyle())
                 }
             }
             .navigationTitle("SpaceX")

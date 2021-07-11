@@ -14,6 +14,7 @@ struct CompanyView: View {
         Text(
             "\(company.name) was founded by \(company.founder) in \(company.yearString). It has now \(company.employees) employees, \(company.launchSites) launch sites, and is valued at USD \(company.valuation)"
         )
+        .padding(8)
     }
 }
 
