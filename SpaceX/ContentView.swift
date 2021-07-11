@@ -37,7 +37,7 @@ struct ContentView: View {
                         }
                 } else {
                     ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 10, pinnedViews: [.sectionHeaders]) {
+                        LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
                             Section(header: HeaderView(title: "COMPANY")) {
                                 CompanyView(company: viewStore.company!)
                             }

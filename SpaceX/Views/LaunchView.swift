@@ -67,6 +67,7 @@ struct LaunchView: View {
                 Text(self.viewStore.rocketInfo)
                 Text("\(self.viewStore.days < 0 ? "-" : "+")\(self.viewStore.days)")
             }
+            Spacer()
             switch self.viewStore.successful {
             case .success:
                 Image(systemName: "checkmark")
@@ -76,6 +77,8 @@ struct LaunchView: View {
                 Image(systemName: "questionmark")
             }
         }
+        .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
         .onTapGesture {
             viewStore.send(.launchTapped)
         }
