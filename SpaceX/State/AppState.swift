@@ -17,13 +17,10 @@ struct AppState: Equatable {
         let sortedArray = self.launches
             .sorted(by: \Launch.launchDate)
             .map { launch -> LaunchViewState in
-                var launchViewState = LaunchViewState(launch: launch, rocket: nil)
-
-                if let rocketId = launch.rocketId {
-                    launchViewState.rocket = self.rockets[rocketId]
-                }
-
-                return launchViewState
+                LaunchViewState(
+                    launch: launch,
+                    rocket: self.rockets[launch.rocketId]
+                )
             }
         
         return IdentifiedArray(sortedArray)
@@ -33,8 +30,13 @@ struct AppState: Equatable {
 enum AppAction {
     case fetchCompany
     case companyResponse(Result<Company, SpaceXClient.Failure>)
+    
     case fetchLaunches
-    case launchesResponse(Result<[Launch], SpaceXClient.Failure>)
+    case launchesResponse(Result<IdentifiedArrayOf<Launch>, SpaceXClient.Failure>)
+    
+    case fetchRockets
+    case rocketsResponse(Result<[String: Rocket], SpaceXClient.Failure>)
+    
     case launchAction(id: Launch.ID, action: LaunchAction)
 }
 
@@ -90,7 +92,24 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             return .none
             
         case let .launchesResponse(.success(response)):
-            state.launches = IdentifiedArray(response)
+            state.launches = response
+            return .none
+            
+        case .fetchRockets:
+            struct FetchRocketsId: Hashable {}
+            
+            return environment.spaceXClient
+                .fetchRockets()
+                .receive(on: environment.mainQueue)
+                .catchToEffect()
+                .map(AppAction.rocketsResponse)
+                .cancellable(id: FetchRocketsId())
+            
+        case .rocketsResponse(.failure):
+            return .none
+            
+        case let .rocketsResponse(.success(response)):
+            state.rockets = response
             return .none
             
         case .launchAction:

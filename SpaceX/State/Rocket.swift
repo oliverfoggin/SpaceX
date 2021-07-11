@@ -12,3 +12,9 @@ struct Rocket: Equatable {
     var name: String
     var type: String
 }
+
+extension Rocket: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case name, type, id
+    }
+}

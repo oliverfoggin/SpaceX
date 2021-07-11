@@ -23,7 +23,7 @@ struct HeaderView: View {
     }
 }
 
-struct ContentView: View {
+struct AppView: View {
     let store: Store<AppState, AppAction>
     
     var body: some View {
@@ -33,7 +33,8 @@ struct ContentView: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .onAppear {
-                            viewStore.send(AppAction.fetchCompany)
+                            viewStore.send(.fetchCompany)
+                            viewStore.send(.fetchRockets)
                         }
                 } else {
                     ScrollView {
@@ -46,7 +47,7 @@ struct ContentView: View {
                                     ProgressView()
                                         .progressViewStyle(LinearProgressViewStyle())
                                         .onAppear {
-                                            viewStore.send(AppAction.fetchLaunches)
+                                            viewStore.send(.fetchLaunches)
                                         }
                                 } else {
                                     ForEachStore(
@@ -73,9 +74,9 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct AppView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(
+        AppView(
             store: Store(
                 initialState: .init(),
                 reducer: appReducer,

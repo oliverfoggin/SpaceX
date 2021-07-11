@@ -14,7 +14,8 @@ struct SpaceXClient {
     }
     
     var fetchCompanyInfo: () -> Effect<Company, Failure>
-    var fetchLaunches: () -> Effect<[Launch], Failure>
+    var fetchLaunches: () -> Effect<IdentifiedArrayOf<Launch>, Failure>
+    var fetchRockets: () -> Effect<[String: Rocket], Failure>
 }
 
 extension SpaceXClient {
@@ -37,6 +38,21 @@ extension SpaceXClient {
                     data
                 }
                 .decode(type: [Launch].self, decoder: jsonDecoder)
+                .map( IdentifiedArray.init )
+                .mapError { error in Failure(message: error.localizedDescription) }
+                .eraseToEffect()
+        },
+        fetchRockets: {
+            var url = URL(string: "https://api.spacexdata.com/v4/rockets")!
+            
+            return URLSession.shared.dataTaskPublisher(for: url)
+                .map { data, _ in
+                    data
+                }
+                .decode(type: [Rocket].self, decoder: jsonDecoder)
+                .map { rockets in
+                    rockets.reduce(into: [:]) { d, r in d[r.id] = r }
+                }
                 .mapError { error in Failure(message: error.localizedDescription) }
                 .eraseToEffect()
         }

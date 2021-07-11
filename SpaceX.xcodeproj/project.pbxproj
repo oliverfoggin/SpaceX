@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		5A9EAD51269B479D0003D8EB /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD50269B479D0003D8EB /* Sequence.swift */; };
 		5AAF6732269A039700DD8ECC /* SpaceXApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AAF6731269A039700DD8ECC /* SpaceXApp.swift */; };
-		5AAF6734269A039700DD8ECC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AAF6733269A039700DD8ECC /* ContentView.swift */; };
+		5AAF6734269A039700DD8ECC /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AAF6733269A039700DD8ECC /* AppView.swift */; };
 		5AAF6736269A039800DD8ECC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5AAF6735269A039800DD8ECC /* Assets.xcassets */; };
 		5AAF6739269A039800DD8ECC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5AAF6738269A039800DD8ECC /* Preview Assets.xcassets */; };
 		5AAF6744269A039800DD8ECC /* SpaceXTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AAF6743269A039800DD8ECC /* SpaceXTests.swift */; };
@@ -45,7 +45,7 @@
 		5A9EAD50269B479D0003D8EB /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		5AAF672E269A039700DD8ECC /* SpaceX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AAF6731269A039700DD8ECC /* SpaceXApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceXApp.swift; sourceTree = "<group>"; };
-		5AAF6733269A039700DD8ECC /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5AAF6733269A039700DD8ECC /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
 		5AAF6735269A039800DD8ECC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5AAF6738269A039800DD8ECC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5AAF673A269A039800DD8ECC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -126,7 +126,6 @@
 				5AE7A92C269A0C1900351891 /* Services */,
 				5AE7A923269A086B00351891 /* State */,
 				5AAF6731269A039700DD8ECC /* SpaceXApp.swift */,
-				5AAF6733269A039700DD8ECC /* ContentView.swift */,
 				5AAF6735269A039800DD8ECC /* Assets.xcassets */,
 				5AAF673A269A039800DD8ECC /* Info.plist */,
 				5AAF6737269A039800DD8ECC /* Preview Content */,
@@ -182,6 +181,7 @@
 		5AE7A93F269A1C4400351891 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5AAF6733269A039700DD8ECC /* AppView.swift */,
 				5AE7A940269A1C5100351891 /* CompanyView.swift */,
 				5AE7A945269A1E9000351891 /* LaunchView.swift */,
 			);
@@ -329,7 +329,7 @@
 				5AE7A946269A1E9000351891 /* LaunchView.swift in Sources */,
 				5AE7A925269A087800351891 /* AppState.swift in Sources */,
 				5AE7A941269A1C5100351891 /* CompanyView.swift in Sources */,
-				5AAF6734269A039700DD8ECC /* ContentView.swift in Sources */,
+				5AAF6734269A039700DD8ECC /* AppView.swift in Sources */,
 				5AE7A936269A132300351891 /* Company.swift in Sources */,
 				5AE7A93B269A133500351891 /* Launch.swift in Sources */,
 				5AAF6732269A039700DD8ECC /* SpaceXApp.swift in Sources */,

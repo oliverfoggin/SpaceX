@@ -12,7 +12,7 @@ struct Launch: Identifiable, Equatable {
     var id: String
     var missionName: String
     var launchDate: Date
-    var rocketId: String?
+    var rocketId: String
     var patchImageURL: URL?
     var success: Bool?
     var wikipediaURL: URL?
@@ -47,7 +47,7 @@ extension Launch: Decodable {
         self.id = try rootContainer.decode(String.self, forKey: .id)
         self.missionName = try rootContainer.decode(String.self, forKey: .missionName)
         self.launchDate = try rootContainer.decode(Date.self, forKey: .launchDate)
-        self.rocketId = try? rootContainer.decode(String.self, forKey: .rocketId)
+        self.rocketId = try rootContainer.decode(String.self, forKey: .rocketId)
         self.patchImageURL = try? patchContainer.decode(URL.self, forKey: .small)
         self.success = try? rootContainer.decode(Bool.self, forKey: .success)
         self.wikipediaURL = try? linksContainer.decode(URL.self, forKey: .wikipedia)
