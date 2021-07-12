@@ -17,6 +17,7 @@ struct Launch: Identifiable, Equatable {
     var success: Bool?
     var wikipediaURL: URL?
     var youtubeId: String?
+    var articleURL: URL?
 }
 
 extension Launch: Decodable {
@@ -30,7 +31,7 @@ extension Launch: Decodable {
     }
     
     enum LinkKeys: String, CodingKey {
-        case patch, youtubeId = "youtube_id", wikipedia
+        case patch, youtubeId = "youtube_id", wikipedia, article
     }
     
     enum PatchKeys: String, CodingKey {
@@ -52,11 +53,12 @@ extension Launch: Decodable {
         self.success = try? rootContainer.decode(Bool.self, forKey: .success)
         self.wikipediaURL = try? linksContainer.decode(URL.self, forKey: .wikipedia)
         self.youtubeId = try? linksContainer.decode(String.self, forKey: .youtubeId)
+        self.articleURL = try? linksContainer.decode(URL.self, forKey: .article)
     }
 }
 
 enum LaunchAction {
-    case launchTapped
+    case launchTapped(launch: Launch)
 }
 
 struct LaunchEnvironment {}

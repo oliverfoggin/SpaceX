@@ -18,12 +18,14 @@ struct AppState: Equatable {
     
     var launches: IdentifiedArrayOf<Launch> = []
     var launchesFetchStatus: FetchStatus = .none
+    var launchSheetState: LaunchSheetState? = nil
+    var showLaunchActionSheet = false
     
     var rockets: [String: Rocket] = [:]
     var rocketsFetchStatus: FetchStatus = .none
     
     var filterState: FilterState = FilterState()
-    var showFilterSheet: Bool = false
+    var showFilterSheet = false
     
     var compiledLaunchViewModels: IdentifiedArrayOf<LaunchViewModel> = []
 }
@@ -79,6 +81,8 @@ enum AppAction {
     case compileLaunches
     
     case launchAction(id: Launch.ID, action: LaunchAction)
+    case setLaunchActionSheet(isPresented: Bool)
+    case launchSheetAction(action: LaunchSheetAction)
     
     case filterAction(action: FilterAction)
     case setFilterSheet(isPresented: Bool)
@@ -110,6 +114,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         state: \AppState.filterState,
         action: /AppAction.filterAction(action:),
         environment: { _ in FilterEnvironment() }
+    ),
+    launchSheetReducer.optional().pullback(
+        state: \AppState.launchSheetState,
+        action: /AppAction.launchSheetAction(action:),
+        environment: { _ in LaunchSheetEnvironment() }
     ),
     Reducer {
         state, action, environment in
@@ -192,8 +201,20 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             state.rockets = response
             return Effect(value: AppAction.compileLaunches)
                 .eraseToEffect()
+        
+        case .launchAction(id: _, action: .launchTapped(let launch)):
+            state.showLaunchActionSheet = true
+            state.launchSheetState = LaunchSheetState(launch: launch)
+            return .none
             
         case .launchAction:
+            return .none
+            
+        case .setLaunchActionSheet(isPresented: let isPresented):
+            state.showLaunchActionSheet = isPresented
+            if !isPresented {
+                state.launchSheetState = nil
+            }
             return .none
             
         case .compileLaunches:
@@ -204,9 +225,17 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             return Effect(value: AppAction.compileLaunches)
                 .eraseToEffect()
             
-        case let .setFilterSheet(isPresented: presented):
-            state.showFilterSheet = presented
+        case .setFilterSheet(isPresented: let isPresented):
+            state.showFilterSheet = isPresented
+            return .none
+            
+        case .launchSheetAction(action: .cancelButtonTapped):
+            state.launchSheetState = nil
+            return .none
+        
+        case .launchSheetAction:
             return .none
         }
     }
 )
+.debug()

@@ -47,4 +47,3 @@ let filterReducer = Reducer<FilterState, FilterAction, FilterEnvironment> {
     }
 }
 .binding(action: /FilterAction.binding)
-.debug()

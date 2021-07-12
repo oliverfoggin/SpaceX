@@ -25,6 +25,7 @@ struct LaunchViewModel: Identifiable, Equatable {
     }
     
     var id: String
+    var launch: Launch
     let missionName: String
     let dateTime: String
     let rocketInfo: String
@@ -33,6 +34,7 @@ struct LaunchViewModel: Identifiable, Equatable {
     
     init(launch: Launch, rocket: Rocket?, now: Date, calendar: Calendar) {
         self.id = launch.id
+        self.launch = launch
         self.missionName = launch.missionName
         self.dateTime = "\(Self.dateFormatter.string(from: launch.launchDate)) at \(Self.timeFormatter.string(from: launch.launchDate))"
         if let rocket = rocket {
@@ -104,7 +106,7 @@ struct LaunchView: View {
             .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
             .onTapGesture {
-                viewStore.send(.launchTapped)
+                viewStore.send(.launchTapped(launch: viewStore.launch))
             }
         }
     }

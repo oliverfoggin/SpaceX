@@ -23,6 +23,48 @@ struct HeaderView: View {
     }
 }
 
+struct LoadingView: View {
+    let store: Store<AppState, AppAction>
+    
+    var body: some View {
+        WithViewStore(self.store) { viewStore in
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+                .onAppear {
+                    viewStore.send(.fetchCompany)
+                    viewStore.send(.fetchRockets)
+                }
+        }
+    }
+}
+
+struct LaunchListView: View {
+    let store: Store<AppState, AppAction>
+    
+    var body: some View {
+        WithViewStore(self.store) { viewStore in
+            Section(header: HeaderView(title: "LAUNCHES")) {
+                if viewStore.launches.isEmpty {
+                    ProgressView()
+                        .progressViewStyle(LinearProgressViewStyle())
+                        .onAppear {
+                            viewStore.send(.fetchLaunches)
+                        }
+                } else {
+                    ForEachStore(
+                        self.store.scope(state: \.compiledLaunchViewModels, action: AppAction.launchAction(id:action:))
+                    ) { launchStore in
+                        VStack {
+                            LaunchView.init(store: launchStore)
+                            Divider()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 struct AppView: View {
     let store: Store<AppState, AppAction>
     @ObservedObject var viewStore: ViewStore<AppState, AppAction>
@@ -36,38 +78,21 @@ struct AppView: View {
         NavigationView {
             ScrollView {
                 if self.viewStore.company == nil {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .onAppear {
-                            self.viewStore.send(.fetchCompany)
-                            self.viewStore.send(.fetchRockets)
-                        }
+                    LoadingView(store: self.store)
                 } else {
                     LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                        Section(header: HeaderView(title: "COMPANY")) {
-                            CompanyView(company: self.viewStore.company!)
-                        }
-                        Section(header: HeaderView(title: "LAUNCHES")) {
-                            if self.viewStore.launches.isEmpty {
-                                ProgressView()
-                                    .progressViewStyle(LinearProgressViewStyle())
-                                    .onAppear {
-                                        self.viewStore.send(.fetchLaunches)
-                                    }
-                            } else {
-                                ForEachStore(
-                                    self.store.scope(state: \.compiledLaunchViewModels, action: AppAction.launchAction(id:action:))
-                                ) { launchStore in
-                                    VStack {
-                                        LaunchView.init(store: launchStore)
-                                        Divider()
-                                    }
-                                }
-                            }
-                        }
-                        
+                        CompanyView(company: self.viewStore.company!)
+                        LaunchListView(store: self.store)
                     }
                 }
+            }
+            .actionSheet(
+                isPresented: viewStore.binding(
+                    get: \.showLaunchActionSheet,
+                    send: AppAction.setLaunchActionSheet(isPresented:)
+                )
+            ) {
+                ActionSheet(title: Text("Hello, world!"))
             }
             .sheet(
                 isPresented: viewStore.binding(
