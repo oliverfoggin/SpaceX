@@ -57,7 +57,7 @@ extension Launch: Decodable {
     }
 }
 
-enum LaunchAction {
+enum LaunchAction: Equatable {
     case launchTapped(launch: Launch)
 }
 

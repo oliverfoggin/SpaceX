@@ -33,7 +33,7 @@ extension FilterState {
     }
 }
 
-enum FilterAction {
+enum FilterAction: Equatable {
     case binding(BindingAction<FilterState>)
 }
 

@@ -87,13 +87,9 @@ struct AppView: View {
                 }
             }
             .actionSheet(
-                isPresented: viewStore.binding(
-                    get: \.showLaunchActionSheet,
-                    send: AppAction.setLaunchActionSheet(isPresented:)
-                )
-            ) {
-                ActionSheet(title: Text("Hello, world!"))
-            }
+                self.store.scope(state: \.launchActionSheet),
+                dismiss: .cancelTapped
+            )
             .sheet(
                 isPresented: viewStore.binding(
                     get: \.showFilterSheet,

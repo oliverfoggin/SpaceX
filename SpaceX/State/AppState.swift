@@ -5,7 +5,7 @@
 //  Created by Foggin, Oliver (Developer) on 10/07/2021.
 //
 
-import Foundation
+import SwiftUI
 import ComposableArchitecture
 
 enum FetchStatus {
@@ -18,8 +18,7 @@ struct AppState: Equatable {
     
     var launches: IdentifiedArrayOf<Launch> = []
     var launchesFetchStatus: FetchStatus = .none
-    var launchSheetState: LaunchSheetState? = nil
-    var showLaunchActionSheet = false
+    var launchActionSheet: ActionSheetState<AppAction>?
     
     var rockets: [String: Rocket] = [:]
     var rocketsFetchStatus: FetchStatus = .none
@@ -68,7 +67,7 @@ extension AppState {
     }
 }
 
-enum AppAction {
+enum AppAction: Equatable {
     case fetchCompany
     case companyResponse(Result<Company, SpaceXClient.Failure>)
     
@@ -81,11 +80,12 @@ enum AppAction {
     case compileLaunches
     
     case launchAction(id: Launch.ID, action: LaunchAction)
-    case setLaunchActionSheet(isPresented: Bool)
-    case launchSheetAction(action: LaunchSheetAction)
     
     case filterAction(action: FilterAction)
     case setFilterSheet(isPresented: Bool)
+    
+    case cancelTapped
+    case openURLTapped(url: URL)
 }
 
 struct AppEnvironment {
@@ -93,6 +93,7 @@ struct AppEnvironment {
     var mainQueue: AnySchedulerOf<DispatchQueue>
     var now: () -> Date
     var calendar: Calendar
+    var application: UIApplication
 }
 
 extension AppEnvironment {
@@ -100,8 +101,33 @@ extension AppEnvironment {
         spaceXClient: .live,
         mainQueue: .main,
         now: Date.init,
-        calendar: .current
+        calendar: .current,
+        application: .shared
     )
+}
+
+extension Launch {
+    var actionSheetButtons: [ActionSheetState<AppAction>.Button] {
+        var buttons: [ActionSheetState<AppAction>.Button] = []
+        if let wiki = self.wikipediaURL {
+            buttons.append(
+                ActionSheetState<AppAction>.Button.default(TextState("Wikipedia"), send: .openURLTapped(url: wiki))
+            )
+        }
+        if let youtubeId = self.youtubeId {
+            let url = URL(string: "http://www.youtube.com/watch?v=\(youtubeId)")!
+            buttons.append(
+                ActionSheetState<AppAction>.Button.default(TextState("YouTube"), send: .openURLTapped(url: url))
+            )
+        }
+        if let article = self.articleURL {
+            buttons.append(
+                ActionSheetState<AppAction>.Button.default(TextState("Article"), send: .openURLTapped(url: article))
+            )
+        }
+        buttons.append(.cancel())
+        return buttons
+    }
 }
 
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
@@ -114,11 +140,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         state: \AppState.filterState,
         action: /AppAction.filterAction(action:),
         environment: { _ in FilterEnvironment() }
-    ),
-    launchSheetReducer.optional().pullback(
-        state: \AppState.launchSheetState,
-        action: /AppAction.launchSheetAction(action:),
-        environment: { _ in LaunchSheetEnvironment() }
     ),
     Reducer {
         state, action, environment in
@@ -203,18 +224,13 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 .eraseToEffect()
         
         case .launchAction(id: _, action: .launchTapped(let launch)):
-            state.showLaunchActionSheet = true
-            state.launchSheetState = LaunchSheetState(launch: launch)
+            state.launchActionSheet = ActionSheetState(
+                title: TextState("Which info would you like to see?"),
+                buttons: launch.actionSheetButtons
+            )
             return .none
             
         case .launchAction:
-            return .none
-            
-        case .setLaunchActionSheet(isPresented: let isPresented):
-            state.showLaunchActionSheet = isPresented
-            if !isPresented {
-                state.launchSheetState = nil
-            }
             return .none
             
         case .compileLaunches:
@@ -229,11 +245,13 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             state.showFilterSheet = isPresented
             return .none
             
-        case .launchSheetAction(action: .cancelButtonTapped):
-            state.launchSheetState = nil
+        case .cancelTapped:
+            state.launchActionSheet = nil
             return .none
-        
-        case .launchSheetAction:
+            
+        case .openURLTapped(url: let url):
+            state.launchActionSheet = nil
+            environment.application.open(url)
             return .none
         }
     }

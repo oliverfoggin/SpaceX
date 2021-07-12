@@ -10,7 +10,6 @@
 		5A9EAD51269B479D0003D8EB /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD50269B479D0003D8EB /* Sequence.swift */; };
 		5A9EAD53269B57FC0003D8EB /* FIlterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD52269B57FC0003D8EB /* FIlterState.swift */; };
 		5A9EAD55269B696B0003D8EB /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD54269B696B0003D8EB /* FilterView.swift */; };
-		5A9EAD57269CF9B70003D8EB /* LaunchSheetState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD56269CF9B70003D8EB /* LaunchSheetState.swift */; };
 		5AAF6732269A039700DD8ECC /* SpaceXApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AAF6731269A039700DD8ECC /* SpaceXApp.swift */; };
 		5AAF6734269A039700DD8ECC /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AAF6733269A039700DD8ECC /* AppView.swift */; };
 		5AAF6736269A039800DD8ECC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5AAF6735269A039800DD8ECC /* Assets.xcassets */; };
@@ -48,7 +47,6 @@
 		5A9EAD50269B479D0003D8EB /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		5A9EAD52269B57FC0003D8EB /* FIlterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FIlterState.swift; sourceTree = "<group>"; };
 		5A9EAD54269B696B0003D8EB /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
-		5A9EAD56269CF9B70003D8EB /* LaunchSheetState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchSheetState.swift; sourceTree = "<group>"; };
 		5AAF672E269A039700DD8ECC /* SpaceX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5AAF6731269A039700DD8ECC /* SpaceXApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceXApp.swift; sourceTree = "<group>"; };
 		5AAF6733269A039700DD8ECC /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
@@ -173,7 +171,6 @@
 				5AE7A93A269A133500351891 /* Launch.swift */,
 				5AE7A94E269AE80500351891 /* Rocket.swift */,
 				5A9EAD52269B57FC0003D8EB /* FIlterState.swift */,
-				5A9EAD56269CF9B70003D8EB /* LaunchSheetState.swift */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -343,7 +340,6 @@
 				5AAF6734269A039700DD8ECC /* AppView.swift in Sources */,
 				5AE7A936269A132300351891 /* Company.swift in Sources */,
 				5AE7A93B269A133500351891 /* Launch.swift in Sources */,
-				5A9EAD57269CF9B70003D8EB /* LaunchSheetState.swift in Sources */,
 				5AAF6732269A039700DD8ECC /* SpaceXApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
