@@ -25,53 +25,70 @@ struct HeaderView: View {
 
 struct AppView: View {
     let store: Store<AppState, AppAction>
+    @ObservedObject var viewStore: ViewStore<AppState, AppAction>
+    
+    init(store: Store<AppState, AppAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store)
+    }
     
     var body: some View {
         NavigationView {
-            WithViewStore(self.store) { viewStore in
-                if viewStore.company == nil {
+            ScrollView {
+                if self.viewStore.company == nil {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .onAppear {
-                            viewStore.send(.fetchCompany)
-                            viewStore.send(.fetchRockets)
+                            self.viewStore.send(.fetchCompany)
+                            self.viewStore.send(.fetchRockets)
                         }
                 } else {
-                    ScrollView {
-                        LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                            Section(header: HeaderView(title: "COMPANY")) {
-                                CompanyView(company: viewStore.company!)
-                            }
-                            Section(header: HeaderView(title: "LAUNCHES")) {
-                                if viewStore.launches.isEmpty {
-                                    ProgressView()
-                                        .progressViewStyle(LinearProgressViewStyle())
-                                        .onAppear {
-                                            viewStore.send(.fetchLaunches)
-                                        }
-                                } else {
-                                    ForEachStore(
-                                        self.store.scope(state: \.compiledLaunchViewModels, action: AppAction.launchAction(id:action:))
-                                    ) { launchStore in
-                                        VStack {
-                                            LaunchView.init(store: launchStore)
-                                            Divider()
-                                        }
+                    LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+                        Section(header: HeaderView(title: "COMPANY")) {
+                            CompanyView(company: self.viewStore.company!)
+                        }
+                        Section(header: HeaderView(title: "LAUNCHES")) {
+                            if self.viewStore.launches.isEmpty {
+                                ProgressView()
+                                    .progressViewStyle(LinearProgressViewStyle())
+                                    .onAppear {
+                                        self.viewStore.send(.fetchLaunches)
+                                    }
+                            } else {
+                                ForEachStore(
+                                    self.store.scope(state: \.compiledLaunchViewModels, action: AppAction.launchAction(id:action:))
+                                ) { launchStore in
+                                    VStack {
+                                        LaunchView.init(store: launchStore)
+                                        Divider()
                                     }
                                 }
                             }
                         }
+                        
                     }
                 }
             }
+            .sheet(
+                isPresented: viewStore.binding(
+                    get: \.showFilterSheet,
+                    send: AppAction.setFilterSheet(isPresented:)
+                )
+            ) {
+                FilterView(
+                    store: self.store.scope(
+                        state: \.filterState,
+                        action: AppAction.filterAction(action:)
+                    )
+                )
+            }
             .navigationTitle("SpaceX")
             .navigationBarItems(
-                trailing: NavigationLink(destination: FilterView(store: self.store.scope(state: \.filterState, action: AppAction.filterAction(action:)))) {
+                trailing: Button(action: { self.viewStore.send(.setFilterSheet(isPresented: true)) }) {
                     Image(systemName: "line.horizontal.3.decrease.circle")
                 }
             )
         }
-        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

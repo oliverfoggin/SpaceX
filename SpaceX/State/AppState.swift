@@ -23,6 +23,7 @@ struct AppState: Equatable {
     var rocketsFetchStatus: FetchStatus = .none
     
     var filterState: FilterState = FilterState()
+    var showFilterSheet: Bool = false
     
     var compiledLaunchViewModels: IdentifiedArrayOf<LaunchViewModel> = []
 }
@@ -78,7 +79,9 @@ enum AppAction {
     case compileLaunches
     
     case launchAction(id: Launch.ID, action: LaunchAction)
+    
     case filterAction(action: FilterAction)
+    case setFilterSheet(isPresented: Bool)
 }
 
 struct AppEnvironment {
@@ -200,6 +203,10 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case .filterAction(action: let action):
             return Effect(value: AppAction.compileLaunches)
                 .eraseToEffect()
+            
+        case let .setFilterSheet(isPresented: presented):
+            state.showFilterSheet = presented
+            return .none
         }
     }
 )
