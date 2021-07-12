@@ -8,7 +8,7 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct LaunchViewState: Identifiable, Equatable {
+struct LaunchViewModel: Identifiable, Equatable {
     enum MissionSuccess {
         case success, failure, unknown
         
@@ -24,19 +24,15 @@ struct LaunchViewState: Identifiable, Equatable {
         }
     }
     
-    var id: String { self.launch.id }
-    var launch: Launch
-    var rocket: Rocket?
-    
+    var id: String
     let missionName: String
     let dateTime: String
     let rocketInfo: String
     let days: Int
     let successful: MissionSuccess
     
-    init(launch: Launch, rocket: Rocket?) {
-        self.launch = launch
-        self.rocket = rocket
+    init(launch: Launch, rocket: Rocket?, now: Date, calendar: Calendar) {
+        self.id = launch.id
         self.missionName = launch.missionName
         self.dateTime = "\(Self.dateFormatter.string(from: launch.launchDate)) at \(Self.timeFormatter.string(from: launch.launchDate))"
         if let rocket = rocket {
@@ -44,7 +40,7 @@ struct LaunchViewState: Identifiable, Equatable {
         } else {
             self.rocketInfo = "Unknown"
         }
-        self.days = Calendar.current.numDaysBetween(Date(), launch.launchDate)
+        self.days = calendar.numDaysBetween(now, launch.launchDate)
         self.successful = .init(success: launch.success)
     }
 }
@@ -60,7 +56,7 @@ extension Calendar {
     }
 }
 
-extension LaunchViewState {
+extension LaunchViewModel {
     static let dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateStyle = .short
@@ -77,7 +73,7 @@ extension LaunchViewState {
 }
 
 struct LaunchView: View {
-    let store: Store<LaunchViewState, LaunchAction>
+    let store: Store<LaunchViewModel, LaunchAction>
     
     var body: some View {
         WithViewStore(self.store) { viewStore in

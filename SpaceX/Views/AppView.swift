@@ -51,7 +51,7 @@ struct AppView: View {
                                         }
                                 } else {
                                     ForEachStore(
-                                        self.store.scope(state: \.sortedFilteredLaunches, action: AppAction.launchAction(id:action:))
+                                        self.store.scope(state: \.compiledLaunchViewModels, action: AppAction.launchAction(id:action:))
                                     ) { launchStore in
                                         VStack {
                                             LaunchView.init(store: launchStore)

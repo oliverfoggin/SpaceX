@@ -22,16 +22,23 @@ struct AppState: Equatable {
     var rockets: [String: Rocket] = [:]
     var rocketsFetchStatus: FetchStatus = .none
     
-    var sortedFilteredLaunches: IdentifiedArrayOf<LaunchViewState> {
-        let sortedArray = self.launches
-            .sorted(by: \Launch.launchDate, using: >)
-            .map { launch -> LaunchViewState in
-                LaunchViewState(
+    var filterState: FilterState = FilterState()
+    
+    var compiledLaunchViewModels: IdentifiedArrayOf<LaunchViewModel> = []
+}
+
+extension AppState {
+    func compileLaunchViewModels(now: Date, calendar: Calendar) -> IdentifiedArrayOf<LaunchViewModel> {
+        let sortedArray = filterState.sort(items: self.launches, by: \.launchDate)
+            .map { launch -> LaunchViewModel in
+                LaunchViewModel(
                     launch: launch,
-                    rocket: self.rockets[launch.rocketId]
+                    rocket: self.rockets[launch.rocketId],
+                    now: now,
+                    calendar: calendar
                 )
             }
-        
+
         return IdentifiedArray(sortedArray)
     }
 }
@@ -47,17 +54,23 @@ enum AppAction {
     case rocketsResponse(Result<[String: Rocket], SpaceXClient.Failure>)
     
     case launchAction(id: Launch.ID, action: LaunchAction)
+    
+    case compileLaunches
 }
 
 struct AppEnvironment {
     var spaceXClient: SpaceXClient
     var mainQueue: AnySchedulerOf<DispatchQueue>
+    var now: () -> Date
+    var calendar: Calendar
 }
 
 extension AppEnvironment {
     static let live = AppEnvironment(
         spaceXClient: .live,
-        mainQueue: .main
+        mainQueue: .main,
+        now: Date.init,
+        calendar: .current
     )
 }
 
@@ -116,7 +129,8 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case let .launchesResponse(.success(response)):
             state.launchesFetchStatus = .complete
             state.launches = response
-            return .none
+            return Effect(value: AppAction.compileLaunches)
+                .eraseToEffect()
             
         case .fetchRockets:
             guard case .none = state.rocketsFetchStatus else {
@@ -140,9 +154,14 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case let .rocketsResponse(.success(response)):
             state.rocketsFetchStatus = .complete
             state.rockets = response
-            return .none
+            return Effect(value: AppAction.compileLaunches)
+                .eraseToEffect()
             
         case .launchAction:
+            return .none
+            
+        case .compileLaunches:
+            state.compiledLaunchViewModels = state.compileLaunchViewModels(now: environment.now(), calendar: environment.calendar)
             return .none
         }
     }
