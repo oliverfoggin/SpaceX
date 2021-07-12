@@ -66,11 +66,12 @@ struct AppView: View {
             }
             .navigationTitle("SpaceX")
             .navigationBarItems(
-                trailing: Button(
-                    action: {}, label: {
-                        Image(systemName: "line.horizontal.3.decrease.circle")
-                    }))
+                trailing: NavigationLink(destination: FilterView(store: self.store.scope(state: \.filterState, action: AppAction.filterAction(action:)))) {
+                    Image(systemName: "line.horizontal.3.decrease.circle")
+                }
+            )
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

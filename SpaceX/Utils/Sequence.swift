@@ -14,3 +14,10 @@ extension Sequence {
         })
     }
 }
+
+extension Sequence where Element: Hashable {
+    func unique() -> [Element] {
+        var s = Set<Element>()
+        return filter { s.insert($0).inserted }
+    }
+}

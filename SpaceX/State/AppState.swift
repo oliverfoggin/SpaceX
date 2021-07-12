@@ -29,7 +29,29 @@ struct AppState: Equatable {
 
 extension AppState {
     func compileLaunchViewModels(now: Date, calendar: Calendar) -> IdentifiedArrayOf<LaunchViewModel> {
-        let sortedArray = filterState.sort(items: self.launches, by: \.launchDate)
+        let sortedArray = self.launches.sorted(by: \.launchDate, using: self.filterState.ascending ? (<) : (>))
+            .filter { launch in
+                switch self.filterState.successFilter {
+                case .all:
+                    return true
+                case .successful:
+                    return launch.success ?? false
+                case .unsuccessful:
+                    return !(launch.success ?? true)
+                }
+            }
+            .filter { launch in
+                switch self.filterState.year {
+                case "All":
+                    return true
+                case let year:
+                    guard let yearInt = Int(year),
+                          calendar.component(.year, from: launch.launchDate) == yearInt else {
+                        return false
+                    }
+                    return true
+                }
+            }
             .map { launch -> LaunchViewModel in
                 LaunchViewModel(
                     launch: launch,
@@ -53,9 +75,10 @@ enum AppAction {
     case fetchRockets
     case rocketsResponse(Result<[String: Rocket], SpaceXClient.Failure>)
     
-    case launchAction(id: Launch.ID, action: LaunchAction)
-    
     case compileLaunches
+    
+    case launchAction(id: Launch.ID, action: LaunchAction)
+    case filterAction(action: FilterAction)
 }
 
 struct AppEnvironment {
@@ -79,6 +102,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         state: \AppState.launches,
         action: /AppAction.launchAction(id:action:),
         environment: { _ in LaunchEnvironment() }
+    ),
+    filterReducer.pullback(
+        state: \AppState.filterState,
+        action: /AppAction.filterAction(action:),
+        environment: { _ in FilterEnvironment() }
     ),
     Reducer {
         state, action, environment in
@@ -129,6 +157,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case let .launchesResponse(.success(response)):
             state.launchesFetchStatus = .complete
             state.launches = response
+            state.filterState.years = ["All"] + response.map { launch in
+                let year = environment.calendar.component(.year, from: launch.launchDate)
+                return FilterState.yearFormatter.string(from: NSNumber(value: year))!
+            }
+            .unique()
             return Effect(value: AppAction.compileLaunches)
                 .eraseToEffect()
             
@@ -163,7 +196,10 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case .compileLaunches:
             state.compiledLaunchViewModels = state.compileLaunchViewModels(now: environment.now(), calendar: environment.calendar)
             return .none
+            
+        case .filterAction(action: let action):
+            return Effect(value: AppAction.compileLaunches)
+                .eraseToEffect()
         }
     }
 )
-.debug()

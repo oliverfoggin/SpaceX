@@ -8,28 +8,33 @@
 import Foundation
 import ComposableArchitecture
 
+enum SuccessFilter: String, CaseIterable {
+    case all = "All"
+    case successful = "Success"
+    case unsuccessful = "Failed"
+}
+
 struct FilterState: Equatable {
-    
-    enum Sort {
-        case asc, desc
-    }
-    
-    var sortMethod: Sort = .asc
+    var ascending: Bool = true
+    var successFilter: SuccessFilter = .all
+    var years: [String] = []
+    var year: String = "All"
 }
 
 extension FilterState {
+    static let yearFormatter: NumberFormatter = {
+        let nf = NumberFormatter()
+        nf.numberStyle = .none
+        return nf
+    }()
+    
     func sort<U, T: Comparable>(items: IdentifiedArrayOf<U>, by keypath: KeyPath<U, T>) -> [U] {
-        switch self.sortMethod {
-        case .asc:
-            return items.sorted(by: keypath, using: <)
-        case .desc:
-            return items.sorted(by: keypath, using: >)
-        }
+        items.sorted(by: keypath, using: self.ascending ? (<) : (>))
     }
 }
 
 enum FilterAction {
-    case selectSortMethod(method: FilterState.Sort)
+    case binding(BindingAction<FilterState>)
 }
 
 struct FilterEnvironment {}
@@ -37,8 +42,9 @@ struct FilterEnvironment {}
 let filterReducer = Reducer<FilterState, FilterAction, FilterEnvironment> {
     state, action, _ in
     switch action {
-    case let .selectSortMethod(method: method):
-        state.sortMethod = method
+    case .binding:
         return .none
     }
 }
+.binding(action: /FilterAction.binding)
+.debug()
