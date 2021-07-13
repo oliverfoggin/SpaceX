@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A995934269E4911003866AA /* LaunchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A995933269E4911003866AA /* LaunchViewModel.swift */; };
+		5A995936269E49A5003866AA /* CompanyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A995935269E49A5003866AA /* CompanyViewModel.swift */; };
 		5A9EAD51269B479D0003D8EB /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD50269B479D0003D8EB /* Sequence.swift */; };
 		5A9EAD53269B57FC0003D8EB /* FIlterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD52269B57FC0003D8EB /* FIlterState.swift */; };
 		5A9EAD55269B696B0003D8EB /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD54269B696B0003D8EB /* FilterView.swift */; };
@@ -45,6 +47,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5A995933269E4911003866AA /* LaunchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModel.swift; sourceTree = "<group>"; };
+		5A995935269E49A5003866AA /* CompanyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyViewModel.swift; sourceTree = "<group>"; };
 		5A9EAD50269B479D0003D8EB /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		5A9EAD52269B57FC0003D8EB /* FIlterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FIlterState.swift; sourceTree = "<group>"; };
 		5A9EAD54269B696B0003D8EB /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
@@ -129,6 +133,7 @@
 			children = (
 				5A9EAD4F269B47920003D8EB /* Utils */,
 				5AE7A93F269A1C4400351891 /* Views */,
+				5AB0F1AB269E48D800276254 /* View Models */,
 				5AE7A92C269A0C1900351891 /* Services */,
 				5AE7A923269A086B00351891 /* State */,
 				5AAF6731269A039700DD8ECC /* SpaceXApp.swift */,
@@ -163,6 +168,15 @@
 				5AAF6750269A039800DD8ECC /* Info.plist */,
 			);
 			path = SpaceXUITests;
+			sourceTree = "<group>";
+		};
+		5AB0F1AB269E48D800276254 /* View Models */ = {
+			isa = PBXGroup;
+			children = (
+				5A995933269E4911003866AA /* LaunchViewModel.swift */,
+				5A995935269E49A5003866AA /* CompanyViewModel.swift */,
+			);
+			path = "View Models";
 			sourceTree = "<group>";
 		};
 		5AE7A923269A086B00351891 /* State */ = {
@@ -335,12 +349,14 @@
 				5A9EAD53269B57FC0003D8EB /* FIlterState.swift in Sources */,
 				5AE7A94F269AE80500351891 /* Rocket.swift in Sources */,
 				5A9EAD51269B479D0003D8EB /* Sequence.swift in Sources */,
+				5A995936269E49A5003866AA /* CompanyViewModel.swift in Sources */,
 				5AE7A92E269A0C2500351891 /* SpaceXClient.swift in Sources */,
 				5A9EAD55269B696B0003D8EB /* FilterView.swift in Sources */,
 				5AE7A946269A1E9000351891 /* LaunchView.swift in Sources */,
 				5AE7A925269A087800351891 /* AppState.swift in Sources */,
 				5AE7A941269A1C5100351891 /* CompanyView.swift in Sources */,
 				5AAF6734269A039700DD8ECC /* AppView.swift in Sources */,
+				5A995934269E4911003866AA /* LaunchViewModel.swift in Sources */,
 				5A9EAD59269D0C930003D8EB /* ImageClient.swift in Sources */,
 				5AE7A936269A132300351891 /* Company.swift in Sources */,
 				5AE7A93B269A133500351891 /* Launch.swift in Sources */,

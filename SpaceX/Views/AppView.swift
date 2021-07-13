@@ -8,6 +8,54 @@
 import SwiftUI
 import ComposableArchitecture
 
+struct AppView: View {
+    let store: Store<AppState, AppAction>
+    @ObservedObject var viewStore: ViewStore<AppState, AppAction>
+    
+    init(store: Store<AppState, AppAction>) {
+        self.store = store
+        self.viewStore = ViewStore(store)
+    }
+    
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                if let company = self.viewStore.company {
+                    LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
+                        CompanyView(companyViewModel: CompanyViewModel(company: company))
+                        LaunchListView(store: self.store)
+                    }
+                } else {
+                    LoadingView(store: self.store)
+                }
+            }
+            .actionSheet(
+                self.store.scope(state: \.launchActionSheet),
+                dismiss: .cancelTapped
+            )
+            .sheet(
+                isPresented: viewStore.binding(
+                    get: \.showFilterSheet,
+                    send: AppAction.setFilterSheet(isPresented:)
+                )
+            ) {
+                FilterView(
+                    store: self.store.scope(
+                        state: \.filterState,
+                        action: AppAction.filterAction(action:)
+                    )
+                )
+            }
+            .navigationTitle("SpaceX")
+            .navigationBarItems(
+                trailing: Button(action: { self.viewStore.send(.setFilterSheet(isPresented: true)) }) {
+                    Image(systemName: "line.horizontal.3.decrease.circle")
+                }
+            )
+        }
+    }
+}
+
 struct HeaderView: View {
     let title: String
     
@@ -61,54 +109,6 @@ struct LaunchListView: View {
                     }
                 }
             }
-        }
-    }
-}
-
-struct AppView: View {
-    let store: Store<AppState, AppAction>
-    @ObservedObject var viewStore: ViewStore<AppState, AppAction>
-    
-    init(store: Store<AppState, AppAction>) {
-        self.store = store
-        self.viewStore = ViewStore(store)
-    }
-    
-    var body: some View {
-        NavigationView {
-            ScrollView {
-                if self.viewStore.company == nil {
-                    LoadingView(store: self.store)
-                } else {
-                    LazyVStack(alignment: .leading, pinnedViews: [.sectionHeaders]) {
-                        CompanyView(company: self.viewStore.company!)
-                        LaunchListView(store: self.store)
-                    }
-                }
-            }
-            .actionSheet(
-                self.store.scope(state: \.launchActionSheet),
-                dismiss: .cancelTapped
-            )
-            .sheet(
-                isPresented: viewStore.binding(
-                    get: \.showFilterSheet,
-                    send: AppAction.setFilterSheet(isPresented:)
-                )
-            ) {
-                FilterView(
-                    store: self.store.scope(
-                        state: \.filterState,
-                        action: AppAction.filterAction(action:)
-                    )
-                )
-            }
-            .navigationTitle("SpaceX")
-            .navigationBarItems(
-                trailing: Button(action: { self.viewStore.send(.setFilterSheet(isPresented: true)) }) {
-                    Image(systemName: "line.horizontal.3.decrease.circle")
-                }
-            )
         }
     }
 }
