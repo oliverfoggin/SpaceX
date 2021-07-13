@@ -26,3 +26,9 @@ extension ImageClient {
         }
     )
 }
+
+extension ImageClient {
+  static let failing = ImageClient(
+    downloadImage: { _ in .failing("ImageClient.downloadImage") }
+  )
+}

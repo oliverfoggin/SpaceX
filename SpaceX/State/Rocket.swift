@@ -7,14 +7,8 @@
 
 import Foundation
 
-struct Rocket: Equatable {
+struct Rocket: Equatable, Decodable {
     var id: String
     var name: String
     var type: String
-}
-
-extension Rocket: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case name, type, id
-    }
 }

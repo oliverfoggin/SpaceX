@@ -59,7 +59,17 @@ extension SpaceXClient {
     )
 }
 
-extension DateFormatter {
+extension SpaceXClient {
+  static let failing = SpaceXClient(
+    fetchCompanyInfo: { .failing("SpaceXClient.fetchCompanyInfo") },
+    fetchLaunches: { .failing("SpaceXClient.fetchLaunches") },
+    fetchRockets: { .failing("SpaceXClient.fetchRockets") }
+  )
+}
+
+// MARK: - Private helpers
+
+private extension DateFormatter {
     static let iso8601Full: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ"
