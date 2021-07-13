@@ -39,11 +39,5 @@ enum FilterAction: Equatable {
 
 struct FilterEnvironment {}
 
-let filterReducer = Reducer<FilterState, FilterAction, FilterEnvironment> {
-    state, action, _ in
-    switch action {
-    case .binding:
-        return .none
-    }
-}
+let filterReducer = Reducer<FilterState, FilterAction, FilterEnvironment> { _, _, _ in .none }
 .binding(action: /FilterAction.binding)
