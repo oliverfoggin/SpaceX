@@ -9,6 +9,13 @@ import SwiftUI
 import ComposableArchitecture
 
 struct Launch: Identifiable, Equatable {
+    enum PatchImageRequest: Equatable {
+        case none
+        case downloading
+        case complete(image: UIImage)
+        case failed
+    }
+    
     var id: String
     var missionName: String
     var launchDate: Date
@@ -18,6 +25,7 @@ struct Launch: Identifiable, Equatable {
     var wikipediaURL: URL?
     var youtubeId: String?
     var articleURL: URL?
+    var patchImage: PatchImageRequest = .none
 }
 
 extension Launch: Decodable {
@@ -59,14 +67,55 @@ extension Launch: Decodable {
 
 enum LaunchAction: Equatable {
     case launchTapped(launch: Launch)
+    case requestImage
+    case imageResponse(Result<UIImage?, ImageClient.Failure>)
 }
 
-struct LaunchEnvironment {}
+struct LaunchEnvironment {
+    var imageClient: ImageClient
+    var mainQueue: AnySchedulerOf<DispatchQueue>
+}
+
+extension LaunchEnvironment {
+    static let live = LaunchEnvironment(
+        imageClient: .live,
+        mainQueue: .main
+    )
+}
 
 let launchReducer = Reducer<Launch, LaunchAction, LaunchEnvironment> {
-    state, action, _ in
+    state, action, environment in
     switch action {
     case .launchTapped:
+        return .none
+    case .requestImage:
+        
+        guard let url = state.patchImageURL,
+            case .none = state.patchImage else {
+            return .none
+        }
+        
+        struct DownloadImageId: Hashable {}
+        
+        state.patchImage = .downloading
+        
+        return environment.imageClient
+            .downloadImage(url)
+            .receive(on: environment.mainQueue)
+            .catchToEffect()
+            .map(LaunchAction.imageResponse)
+            .cancellable(id: DownloadImageId())
+        
+    case .imageResponse(.failure):
+        state.patchImage = .failed
+        return .none
+        
+    case .imageResponse(.success(nil)):
+        state.patchImage = .failed
+        return .none
+        
+    case let .imageResponse(.success(.some(image))):
+        state.patchImage = .complete(image: image)
         return .none
     }
 }

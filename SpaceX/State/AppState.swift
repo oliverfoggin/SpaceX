@@ -94,6 +94,7 @@ struct AppEnvironment {
     var now: () -> Date
     var calendar: Calendar
     var application: UIApplication
+    var launchEnvironment: LaunchEnvironment
 }
 
 extension AppEnvironment {
@@ -102,7 +103,8 @@ extension AppEnvironment {
         mainQueue: .main,
         now: Date.init,
         calendar: .current,
-        application: .shared
+        application: .shared,
+        launchEnvironment: .live
     )
 }
 
@@ -134,7 +136,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     launchReducer.forEach(
         state: \AppState.launches,
         action: /AppAction.launchAction(id:action:),
-        environment: { _ in LaunchEnvironment() }
+        environment: { $0.launchEnvironment }
     ),
     filterReducer.pullback(
         state: \AppState.filterState,
@@ -230,6 +232,10 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             )
             return .none
             
+        case .launchAction(id: _, action: .imageResponse(.success(.some))):
+            return Effect(value: AppAction.compileLaunches)
+                .eraseToEffect()
+            
         case .launchAction:
             return .none
             
@@ -256,4 +262,3 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         }
     }
 )
-.debug()

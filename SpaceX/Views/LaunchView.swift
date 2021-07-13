@@ -30,7 +30,9 @@ struct LaunchViewModel: Identifiable, Equatable {
     let dateTime: String
     let rocketInfo: String
     let days: Int
-    let successful: MissionSuccess
+    let successImage: Image
+    let daysTitle: String
+    let patchImage: Image
     
     init(launch: Launch, rocket: Rocket?, now: Date, calendar: Calendar) {
         self.id = launch.id
@@ -43,7 +45,27 @@ struct LaunchViewModel: Identifiable, Equatable {
             self.rocketInfo = "Unknown"
         }
         self.days = calendar.numDaysBetween(now, launch.launchDate)
-        self.successful = .init(success: launch.success)
+        self.daysTitle = "Days \(self.days < 0 ? "since" : "from") now:"
+        
+        switch MissionSuccess.init(success: launch.success) {
+        case .success:
+            self.successImage = Image(systemName: "checkmark")
+        case .failure:
+            self.successImage = Image(systemName: "xmark")
+        case .unknown:
+            self.successImage = Image(systemName: "questionmark")
+        }
+        
+        switch launch.patchImage {
+        case .none:
+            self.patchImage = Image(systemName: "circle.fill")
+        case .downloading:
+            self.patchImage = Image(systemName: "ellipsis.circle.fill")
+        case .complete(image: let image):
+            self.patchImage = Image(uiImage: image)
+        case .failed:
+            self.patchImage = Image(systemName: "xmark.circle.fill")
+        }
     }
 }
 
@@ -80,12 +102,15 @@ struct LaunchView: View {
     var body: some View {
         WithViewStore(self.store) { viewStore in
             HStack(alignment: .firstTextBaseline) {
-                Image(systemName: "paperplane.fill")
+                viewStore.patchImage
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 30, height: 30, alignment: .center)
                 VStack(alignment: .leading) {
                     Text("Mission:")
                     Text("Date/time:")
                     Text("Rocket:")
-                    Text("Days \(viewStore.days < 0 ? "since" : "from") now:")
+                    Text(viewStore.daysTitle)
                 }
                 VStack(alignment: .leading) {
                     Text(viewStore.missionName)
@@ -94,19 +119,17 @@ struct LaunchView: View {
                     Text("\(viewStore.days)")
                 }
                 Spacer()
-                switch viewStore.successful {
-                case .success:
-                    Image(systemName: "checkmark")
-                case .failure:
-                    Image(systemName: "xmark")
-                case .unknown:
-                    Image(systemName: "questionmark")
-                }
+                viewStore.successImage
             }
             .padding(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
             .onTapGesture {
                 viewStore.send(.launchTapped(launch: viewStore.launch))
+            }
+            .onAppear {
+                if case .none = viewStore.launch.patchImage {
+                    viewStore.send(.requestImage)
+                }
             }
         }
     }
