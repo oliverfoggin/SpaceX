@@ -10,6 +10,8 @@
 		5A995934269E4911003866AA /* LaunchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A995933269E4911003866AA /* LaunchViewModel.swift */; };
 		5A995936269E49A5003866AA /* CompanyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A995935269E49A5003866AA /* CompanyViewModel.swift */; };
 		5A995938269ED439003866AA /* FilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A995937269ED439003866AA /* FilterTests.swift */; };
+		5A99593C269F658D003866AA /* CompanyViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A99593B269F658D003866AA /* CompanyViewModelTests.swift */; };
+		5A99593E269F665D003866AA /* LaunchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A99593D269F665D003866AA /* LaunchViewModelTests.swift */; };
 		5A9EAD51269B479D0003D8EB /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD50269B479D0003D8EB /* Sequence.swift */; };
 		5A9EAD53269B57FC0003D8EB /* FIlterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD52269B57FC0003D8EB /* FIlterState.swift */; };
 		5A9EAD55269B696B0003D8EB /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD54269B696B0003D8EB /* FilterView.swift */; };
@@ -50,6 +52,8 @@
 		5A995933269E4911003866AA /* LaunchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModel.swift; sourceTree = "<group>"; };
 		5A995935269E49A5003866AA /* CompanyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyViewModel.swift; sourceTree = "<group>"; };
 		5A995937269ED439003866AA /* FilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTests.swift; sourceTree = "<group>"; };
+		5A99593B269F658D003866AA /* CompanyViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyViewModelTests.swift; sourceTree = "<group>"; };
+		5A99593D269F665D003866AA /* LaunchViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModelTests.swift; sourceTree = "<group>"; };
 		5A9EAD50269B479D0003D8EB /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		5A9EAD52269B57FC0003D8EB /* FIlterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FIlterState.swift; sourceTree = "<group>"; };
 		5A9EAD54269B696B0003D8EB /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
@@ -156,6 +160,8 @@
 				5AAF6743269A039800DD8ECC /* SpaceXTests.swift */,
 				5AAF6745269A039800DD8ECC /* Info.plist */,
 				5A995937269ED439003866AA /* FilterTests.swift */,
+				5A99593B269F658D003866AA /* CompanyViewModelTests.swift */,
+				5A99593D269F665D003866AA /* LaunchViewModelTests.swift */,
 			);
 			path = SpaceXTests;
 			sourceTree = "<group>";
@@ -358,8 +364,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A99593C269F658D003866AA /* CompanyViewModelTests.swift in Sources */,
 				5AAF6744269A039800DD8ECC /* SpaceXTests.swift in Sources */,
 				5A995938269ED439003866AA /* FilterTests.swift in Sources */,
+				5A99593E269F665D003866AA /* LaunchViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
