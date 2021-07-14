@@ -12,6 +12,7 @@
 		5A995938269ED439003866AA /* FilterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A995937269ED439003866AA /* FilterTests.swift */; };
 		5A99593C269F658D003866AA /* CompanyViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A99593B269F658D003866AA /* CompanyViewModelTests.swift */; };
 		5A99593E269F665D003866AA /* LaunchViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A99593D269F665D003866AA /* LaunchViewModelTests.swift */; };
+		5A995940269F78AC003866AA /* Calendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A99593F269F78AC003866AA /* Calendar.swift */; };
 		5A9EAD51269B479D0003D8EB /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD50269B479D0003D8EB /* Sequence.swift */; };
 		5A9EAD53269B57FC0003D8EB /* FIlterState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD52269B57FC0003D8EB /* FIlterState.swift */; };
 		5A9EAD55269B696B0003D8EB /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9EAD54269B696B0003D8EB /* FilterView.swift */; };
@@ -54,6 +55,7 @@
 		5A995937269ED439003866AA /* FilterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTests.swift; sourceTree = "<group>"; };
 		5A99593B269F658D003866AA /* CompanyViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanyViewModelTests.swift; sourceTree = "<group>"; };
 		5A99593D269F665D003866AA /* LaunchViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewModelTests.swift; sourceTree = "<group>"; };
+		5A99593F269F78AC003866AA /* Calendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calendar.swift; sourceTree = "<group>"; };
 		5A9EAD50269B479D0003D8EB /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		5A9EAD52269B57FC0003D8EB /* FIlterState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FIlterState.swift; sourceTree = "<group>"; };
 		5A9EAD54269B696B0003D8EB /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
@@ -103,12 +105,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5A9EAD4F269B47920003D8EB /* Utils */ = {
+		5A9EAD4F269B47920003D8EB /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				5A9EAD50269B479D0003D8EB /* Sequence.swift */,
+				5A99593F269F78AC003866AA /* Calendar.swift */,
 			);
-			path = Utils;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		5AAF6725269A039700DD8ECC = {
@@ -133,7 +136,7 @@
 		5AAF6730269A039700DD8ECC /* SpaceX */ = {
 			isa = PBXGroup;
 			children = (
-				5A9EAD4F269B47920003D8EB /* Utils */,
+				5A9EAD4F269B47920003D8EB /* Extensions */,
 				5AE7A93F269A1C4400351891 /* Views */,
 				5AB0F1AB269E48D800276254 /* View Models */,
 				5AE7A92C269A0C1900351891 /* Services */,
@@ -345,6 +348,7 @@
 				5A9EAD53269B57FC0003D8EB /* FIlterState.swift in Sources */,
 				5AE7A94F269AE80500351891 /* Rocket.swift in Sources */,
 				5A9EAD51269B479D0003D8EB /* Sequence.swift in Sources */,
+				5A995940269F78AC003866AA /* Calendar.swift in Sources */,
 				5A995936269E49A5003866AA /* CompanyViewModel.swift in Sources */,
 				5AE7A92E269A0C2500351891 /* SpaceXClient.swift in Sources */,
 				5A9EAD55269B696B0003D8EB /* FilterView.swift in Sources */,
