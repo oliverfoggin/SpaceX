@@ -48,3 +48,21 @@ struct FilterView: View {
         }
     }
 }
+
+struct FilterView_Previews: PreviewProvider {
+    static var previews: some View {
+        FilterView(
+            store: Store(
+                initialState: FilterState(
+                    ascending: true,
+                    successFilter: .all,
+                    years: ["All", "2019", "2020", "2021"],
+                    year: "2020"
+                ),
+                reducer: filterReducer,
+                environment: FilterEnvironment()
+            )
+        )
+    }
+}
+
