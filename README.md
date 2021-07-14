@@ -5,6 +5,9 @@ SpaceX Launch details
  - SwiftUI
  - [The Composable Architecture](https://github.com/pointfreeco/swift-composable-architecture)
 
+## SpaceX-API
+- [SpaceX REST API](https://github.com/r-spacex/SpaceX-API)
+
 ## App Icon
  - [CoreUIBrands](https://icon-icons.com/icon/spacex-logo/144865)
  - [CC License](https://creativecommons.org/licenses/by/4.0/)
@@ -16,4 +19,4 @@ The "Root" of the app lies in `AppState.swift` and `AppView.swift`. AppState con
 
 The `compiledLaunchViewModels` is a sorted and filtered version of the launches which are then mapped onto their view models for passing to the view.
 
-Because each launch is persistent throughout the app it also holds onto its patch image and patch image download state so that I can update the view btu, more importantly, ensure I am only requesting each image once. (And also only on the first time the launch is diaplyed on screen).
+Because each launch is persistent throughout the app it also holds onto its patch image and patch image download state so that I can update the view but, more importantly, ensure I am only requesting each image once. (And also only on the first time the launch is displayed on screen).
