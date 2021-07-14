@@ -13,11 +13,11 @@ struct LaunchView: View {
     
     var body: some View {
         WithViewStore(self.store) { viewStore in
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .top) {
                 viewStore.patchImage
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 30, height: 30, alignment: .center)
+                    .frame(width: 30, height: 30)
                 VStack(alignment: .leading) {
                     Text("Mission:")
                     Text("Date/time:")
