@@ -16,10 +16,11 @@ struct AppState: Equatable {
     var company: Company?
     var companyFetchStatus: FetchStatus = .none
     
+    var downloadErrorAlert: AlertState<AppAction>?
+    
     var launches: IdentifiedArrayOf<Launch> = []
     var launchesFetchStatus: FetchStatus = .none
     var launchActionSheet: ActionSheetState<AppAction>?
-    var launchDownloadErrorAlert: AlertState<AppAction>?
     
     var rockets: [String: Rocket] = [:]
     var rocketsFetchStatus: FetchStatus = .none
@@ -71,9 +72,13 @@ extension AppState {
 enum AppAction: Equatable {
     case fetchCompany
     case companyResponse(Result<Company, SpaceXClient.Failure>)
+    case companyAlertReloadTapped
+    
+    case downloadAlertCancelTapped
     
     case fetchLaunches
     case launchesResponse(Result<IdentifiedArrayOf<Launch>, SpaceXClient.Failure>)
+    case launchAlertReloadTapped
     
     case fetchRockets
     case rocketsResponse(Result<[String: Rocket], SpaceXClient.Failure>)
@@ -81,8 +86,6 @@ enum AppAction: Equatable {
     case compileLaunches
     
     case launchAction(id: Launch.ID, action: LaunchAction)
-    case launchAlertReloadTapped
-    case launchAlertCancelTapped
     
     case filterAction(action: FilterAction)
     case setFilterSheet(isPresented: Bool)
@@ -166,6 +169,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
                 
         case .companyResponse(.failure):
             state.companyFetchStatus = .complete
+            state.downloadErrorAlert = AlertState(
+                title: TextState("Compnay Info failed to download"),
+                primaryButton: .default(TextState("Retry"), send: AppAction.companyAlertReloadTapped),
+                secondaryButton: .cancel(send: .downloadAlertCancelTapped)
+            )
             return .none
             
         case let .companyResponse(.success(response)):
@@ -190,10 +198,10 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             
         case .launchesResponse(.failure):
             state.launchesFetchStatus = .complete
-            state.launchDownloadErrorAlert = AlertState(
+            state.downloadErrorAlert = AlertState(
                 title: TextState("Launches failed to download"),
-                primaryButton: .default(TextState("Reload"), send: AppAction.launchAlertReloadTapped),
-                secondaryButton: .cancel(send: .launchAlertCancelTapped)
+                primaryButton: .default(TextState("Retry"), send: AppAction.launchAlertReloadTapped),
+                secondaryButton: .cancel(send: .downloadAlertCancelTapped)
             )
             return .none
             
@@ -265,12 +273,18 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             return .none
             
         case .launchAlertReloadTapped:
+            state.downloadErrorAlert = nil
             state.launchesFetchStatus = .none
             return Effect(value: .fetchLaunches)
             
-        case .launchAlertCancelTapped:
-            state.launchDownloadErrorAlert = nil
+        case .downloadAlertCancelTapped:
+            state.downloadErrorAlert = nil
             return .none
+            
+        case .companyAlertReloadTapped:
+            state.downloadErrorAlert = nil
+            state.companyFetchStatus = .none
+            return Effect(value: .fetchCompany)
         }
     }
 )

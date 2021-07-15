@@ -47,8 +47,8 @@ struct AppView: View {
                 )
             }
             .alert(
-                self.store.scope(state: \.launchDownloadErrorAlert),
-                dismiss: .launchAlertCancelTapped
+                self.store.scope(state: \.downloadErrorAlert),
+                dismiss: .downloadAlertCancelTapped
             )
             .navigationTitle("SpaceX")
             .navigationBarItems(
