@@ -19,6 +19,7 @@ struct AppState: Equatable {
     var launches: IdentifiedArrayOf<Launch> = []
     var launchesFetchStatus: FetchStatus = .none
     var launchActionSheet: ActionSheetState<AppAction>?
+    var launchDownloadErrorAlert: AlertState<AppAction>?
     
     var rockets: [String: Rocket] = [:]
     var rocketsFetchStatus: FetchStatus = .none
@@ -80,12 +81,16 @@ enum AppAction: Equatable {
     case compileLaunches
     
     case launchAction(id: Launch.ID, action: LaunchAction)
+    case launchAlertReloadTapped
+    case launchAlertCancelTapped
     
     case filterAction(action: FilterAction)
     case setFilterSheet(isPresented: Bool)
     
     case cancelTapped
     case openURLTapped(url: URL)
+    
+    case refresh
 }
 
 struct AppEnvironment {
@@ -187,6 +192,11 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             
         case .launchesResponse(.failure):
             state.launchesFetchStatus = .complete
+            state.launchDownloadErrorAlert = AlertState(
+                title: TextState("Launches failed to download"),
+                primaryButton: .default(TextState("Reload"), send: AppAction.launchAlertReloadTapped),
+                secondaryButton: .cancel(send: .launchAlertCancelTapped)
+            )
             return .none
             
         case let .launchesResponse(.success(response)):
@@ -198,7 +208,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             }
             .unique()
             return Effect(value: AppAction.compileLaunches)
-                .eraseToEffect()
             
         case .fetchRockets:
             guard case .none = state.rocketsFetchStatus else {
@@ -223,7 +232,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             state.rocketsFetchStatus = .complete
             state.rockets = response
             return Effect(value: AppAction.compileLaunches)
-                .eraseToEffect()
         
         case .launchAction(id: _, action: .launchTapped(let launch)):
             state.launchActionSheet = ActionSheetState(
@@ -234,7 +242,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             
         case .launchAction(id: _, action: .imageResponse(.success(.some))):
             return Effect(value: AppAction.compileLaunches)
-                .eraseToEffect()
             
         case .launchAction:
             return .none
@@ -245,7 +252,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             
         case .filterAction(action: let action):
             return Effect(value: AppAction.compileLaunches)
-                .eraseToEffect()
             
         case .setFilterSheet(isPresented: let isPresented):
             state.showFilterSheet = isPresented
@@ -258,6 +264,24 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case .openURLTapped(url: let url):
             state.launchActionSheet = nil
             environment.application.open(url)
+            return .none
+            
+        case .launchAlertReloadTapped:
+            state.launchesFetchStatus = .none
+            return Effect(value: .fetchLaunches)
+            
+        case .launchAlertCancelTapped:
+            state.launchDownloadErrorAlert = nil
+            return .none
+            
+        case .refresh:
+            state.launchesFetchStatus = .none
+            state.companyFetchStatus = .none
+            state.rocketsFetchStatus = .none
+            state.company = nil
+            state.rockets = [:]
+            state.launches = []
+            state.compiledLaunchViewModels = []
             return .none
         }
     }

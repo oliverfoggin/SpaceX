@@ -46,6 +46,10 @@ struct AppView: View {
                     )
                 )
             }
+            .alert(
+                self.store.scope(state: \.launchDownloadErrorAlert),
+                dismiss: .launchAlertCancelTapped
+            )
             .navigationTitle("SpaceX")
             .navigationBarItems(
                 trailing: Button(action: { self.viewStore.send(.setFilterSheet(isPresented: true)) }) {
