@@ -89,8 +89,6 @@ enum AppAction: Equatable {
     
     case cancelTapped
     case openURLTapped(url: URL)
-    
-    case refresh
 }
 
 struct AppEnvironment {
@@ -272,16 +270,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             
         case .launchAlertCancelTapped:
             state.launchDownloadErrorAlert = nil
-            return .none
-            
-        case .refresh:
-            state.launchesFetchStatus = .none
-            state.companyFetchStatus = .none
-            state.rocketsFetchStatus = .none
-            state.company = nil
-            state.rockets = [:]
-            state.launches = []
-            state.compiledLaunchViewModels = []
             return .none
         }
     }
